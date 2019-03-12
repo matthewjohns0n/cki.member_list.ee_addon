@@ -18,7 +18,7 @@ h2. Requirements
 
 h2. Installation
 
-* Copy the <code>cki_mblist</code> folder to your <code>system/expressionengine/third_party/</code> folder.<br/>
+* Copy the <code>cki_mblist</code> folder to your <code>system/user/addons/</code> folder.<br/>
 * Go to Add-ons -> Fieldtypes in the ExpressionEngine control panel and install the fieldtype labelled 'CKI Member List'
 * Select *CKI Member List* as the field type when creating a new custom field type
 
