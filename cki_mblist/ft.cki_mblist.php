@@ -4,7 +4,7 @@ require_once(PATH_THIRD . 'cki_mblist/config.php');
 
 class Cki_mblist_ft extends EE_Fieldtype
 {
-    //Needed in order to get the fieldtype to work as a single AND tag pair
+    // Needed in order to get the fieldtype to work as a single AND tag pair
     public $has_array_data = true;
 
     public $info = array(
@@ -15,12 +15,12 @@ class Cki_mblist_ft extends EE_Fieldtype
     public function __construct()
     {
         parent::__construct();
-
         ee()->lang->loadfile(CKI_MBLIST_KEY);
     }
 
-    /*
-     * param $data mixed    Previously saved cell data
+    /**
+     * Previously saved cell data
+     * @param  [mixed] $data
      */
     public function display_field($data)
     {
@@ -38,30 +38,27 @@ class Cki_mblist_ft extends EE_Fieldtype
         }
         $q = ee()->db->get();
 
-        //Create a blank option
+        // Create a blank option
         $member_list[''] = "None";
 
-        //Setup the member list array to send to the form_dropdown function
+        // Setup the member list array to send to the form_dropdown function
         foreach ($q->result_array() as $member) {
             $member_list[$member['group_title']][$member['member_id']] = $member['screen_name'];
             $member_id_array[$member['member_id']] = $member['screen_name'];
         }
 
-        //Quickly check to see (if on the EDIT page) that the previously selected member still exists
+        // Quickly check to see (if on the EDIT page) that the previously selected member still exists
         if (!array_key_exists($data, $member_id_array) && $data != '') {
-            //If not, append a warning message
+            // If not, append a warning message
             $deleted_user_message = "&nbsp;<span class='notice'>Selected member no longer exists.</span>";
         }
 
         return form_dropdown($this->field_name, $member_list, $data, 'dir="'.$text_direction.'" id="'.$this->field_id.'"').$deleted_user_message;
     }
-    //END
 
-
-    // ====================================
-    // = Get the data out of the database =
-    // ====================================
-
+    /**
+     * Get the data out of the database
+     */
     public function pre_process($data)
     {
         ee()->db->select('*');
@@ -80,20 +77,18 @@ class Cki_mblist_ft extends EE_Fieldtype
         }
     }
 
-
-    // ============================
-    // = Parse the front end data =
-    // ============================
-
+    /**
+     * Parse the front end data
+     */
     public function replace_tag($data, $params = array(), $tagdata = false)
     {
-        //Promote the use of the "show" parameter to select member data,
-        //but keep backward compatibility by allowing "get" to still be used
+        // Promote the use of the "show" parameter to select member data,
+        // but keep backward compatibility by allowing "get" to still be used
         if (isset($params['show'])) {
             $params['get'] = $params['show'];
         }
 
-        //Check everything is in order and the requested array key exists
+        // Check everything is in order and the requested array key exists
         if ($data !== false && isset($params['get']) && array_key_exists($params['get'], $data)) {
             return $data[$params['get']];
         } else {
@@ -105,16 +100,14 @@ class Cki_mblist_ft extends EE_Fieldtype
         }
     }
 
-
-    // ====================================
-    // = Validate the drop down selection =
-    // ====================================
-
+    /**
+     * Validate the drop down selection
+     */
     public function validate($data)
     {
-        //Check that that a selection has been made
+        // Check that that a selection has been made
         if ($data != '') {
-            //Query the database to see if selected member exists
+            // Query the database to see if selected member exists
             $q = ee()->db->get_where('exp_members', array('member_id' => $data), 1);
 
             if ($q->num_rows() ===  1) {
@@ -124,7 +117,6 @@ class Cki_mblist_ft extends EE_Fieldtype
             }
         }
     }
-    //END
 
     public function display_settings($data)
     {
@@ -135,12 +127,12 @@ class Cki_mblist_ft extends EE_Fieldtype
 
         $field_options = array();
 
-        //Setup the member list array to send to the form_dropdown function
+        // Setup the member list array to send to the form_dropdown function
         foreach ($q->result_array() as $group) {
             $field_options['group_ids'][$group['group_id']] = $group['group_title'];
         }
 
-        // is this a new field?
+        // Is this a new field?
         $field_values = (array_key_exists(CKI_MBLIST_KEY, $data)) ?
             $data[CKI_MBLIST_KEY] :
             $this->_normalise_settings()
@@ -156,7 +148,6 @@ class Cki_mblist_ft extends EE_Fieldtype
     {
         return array(CKI_MBLIST_KEY => $this->_normalise_settings($_POST[CKI_MBLIST_KEY], true));
     }
-    //END
 
     public function install()
     {
@@ -172,6 +163,8 @@ class Cki_mblist_ft extends EE_Fieldtype
     {
         return true;
     }
+
+    // --------------------------------------------------------------------
 
     /**
      * Fetch from array
@@ -197,7 +190,6 @@ class Cki_mblist_ft extends EE_Fieldtype
 
         return $array[$index];
     }
-    // --------------------------------------------------------------------
 
     /**
      * Normalise Settings
@@ -211,9 +203,8 @@ class Cki_mblist_ft extends EE_Fieldtype
     public function _normalise_settings(&$array = array(), $xss_clean = false)
     {
         return array(
-            'group_ids' => ($this->_fetch_from_array($array, 'group_ids', $xss_clean)) ? implode('|', $this->_fetch_from_array($array, 'group_ids', $xss_clean)) : ''
+            'group_ids' => ($this->_fetch_from_array($array, 'group_ids', $xss_clean))
+                ? implode('|', $this->_fetch_from_array($array, 'group_ids', $xss_clean)) : ''
         );
     }
 }
-
-    //END CLASS
