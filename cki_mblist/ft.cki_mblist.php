@@ -1,6 +1,6 @@
 <?php
 
-require_once(PATH_THIRD . 'cki_mblist/config.php');
+require_once(PATH_THIRD . 'cki_mblist/addon.setup.php');
 
 class Cki_mblist_ft extends EE_Fieldtype
 {
@@ -33,6 +33,7 @@ class Cki_mblist_ft extends EE_Fieldtype
         ee()->db->join('exp_member_groups', 'exp_members.group_id = exp_member_groups.group_id');
         ee()->db->join('exp_member_data', 'exp_member_data.member_id = exp_members.member_id');
         ee()->db->order_by('exp_member_groups.group_id asc, exp_members.screen_name');
+
         if ($this->settings[CKI_MBLIST_KEY]['group_ids']) {
             ee()->db->where_in('exp_members.group_id', explode('|', $this->settings[CKI_MBLIST_KEY]['group_ids']));
         }
