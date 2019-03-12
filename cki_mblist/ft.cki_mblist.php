@@ -133,15 +133,31 @@ class Cki_mblist_ft extends EE_Fieldtype
             $field_options['group_ids'][$group['group_id']] = $group['group_title'];
         }
 
-        // Is this a new field?
-        $field_values = (array_key_exists(CKI_MBLIST_KEY, $data)) ?
-            $data[CKI_MBLIST_KEY] :
-            $this->_normalise_settings()
-        ;
+        $field_values = $this->_normalise_settings();
 
-        ee()->table->add_row(
-            '<strong>' . lang('group_ids_label') . '</strong><br />' . lang('group_ids_label_notes'),
-            form_multiselect('cki_mblist[group_ids][]', $field_options['group_ids'], explode('|', $field_values['group_ids']))
+        // Is this a new field?
+        if (array_key_exists(CKI_MBLIST_KEY, $data)) {
+            $field_values['group_ids'] = explode('|', $data[CKI_MBLIST_KEY]['group_ids']);
+        }
+
+        $rows[] = array(
+            'title'  => lang('group_ids_label'),
+            'desc'   => lang('group_ids_label_notes'),
+            'fields' => array(
+                'cki_mblist[group_ids]' => array(
+                    'type'    => 'checkbox',
+                    'choices' => $field_options['group_ids'],
+                    'value' => $field_values['group_ids']
+                ),
+            ),
+        );
+
+        return array(
+            'field_options_cki_mblist' => array(
+                'label'    => 'field_options',
+                'group'    => 'cki_mblist',
+                'settings' => $rows,
+            ),
         );
     }
 
