@@ -1,6 +1,4 @@
-<?php if (! defined('BASEPATH')) {
-    exit('No direct script access allowed');
-}
+<?php
 
 require_once(PATH_THIRD . 'cki_mblist/config.php');
 
@@ -9,12 +7,12 @@ class Cki_mblist_ft extends EE_Fieldtype
     //Needed in order to get the fieldtype to work as a single AND tag pair
     public $has_array_data = true;
 
-    public $info    =   array(
-                'name'      =>  CKI_MBLIST_NAME,
-                'version'   =>  CKI_MBLIST_VER
+    public $info = array(
+        'name'      =>  CKI_MBLIST_NAME,
+        'version'   =>  CKI_MBLIST_VER
     );
 
-    public function Cki_mblist_ft()
+    public function __construct()
     {
         parent::__construct();
 
