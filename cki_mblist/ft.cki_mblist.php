@@ -4,9 +4,6 @@
 
 require_once(PATH_THIRD . 'cki_mblist/config.php');
 
-/**
-*
-*/
 class Cki_mblist_ft extends EE_Fieldtype
 {
     //Needed in order to get the fieldtype to work as a single AND tag pair
@@ -21,7 +18,7 @@ class Cki_mblist_ft extends EE_Fieldtype
     {
         parent::__construct();
 
-        $this->EE->lang->loadfile(CKI_MBLIST_KEY);
+        ee()->lang->loadfile(CKI_MBLIST_KEY);
     }
 
     /*
@@ -33,15 +30,15 @@ class Cki_mblist_ft extends EE_Fieldtype
         $member_list = array();
         $deleted_user_message = '';
 
-        $this->EE->db->select('group_title, exp_members.member_id, screen_name');
-        $this->EE->db->from('exp_members');
-        $this->EE->db->join('exp_member_groups', 'exp_members.group_id = exp_member_groups.group_id');
-        $this->EE->db->join('exp_member_data', 'exp_member_data.member_id = exp_members.member_id');
-        $this->EE->db->order_by('exp_member_groups.group_id asc, exp_members.screen_name');
+        ee()->db->select('group_title, exp_members.member_id, screen_name');
+        ee()->db->from('exp_members');
+        ee()->db->join('exp_member_groups', 'exp_members.group_id = exp_member_groups.group_id');
+        ee()->db->join('exp_member_data', 'exp_member_data.member_id = exp_members.member_id');
+        ee()->db->order_by('exp_member_groups.group_id asc, exp_members.screen_name');
         if ($this->settings[CKI_MBLIST_KEY]['group_ids']) {
-            $this->EE->db->where_in('exp_members.group_id', explode('|', $this->settings[CKI_MBLIST_KEY]['group_ids']));
+            ee()->db->where_in('exp_members.group_id', explode('|', $this->settings[CKI_MBLIST_KEY]['group_ids']));
         }
-        $q = $this->EE->db->get();
+        $q = ee()->db->get();
 
         //Create a blank option
         $member_list[''] = "None";
@@ -69,13 +66,13 @@ class Cki_mblist_ft extends EE_Fieldtype
 
     public function pre_process($data)
     {
-        $this->EE->db->select('*');
-        $this->EE->db->from('exp_members');
-        $this->EE->db->join('exp_member_groups', 'exp_members.group_id = exp_member_groups.group_id');
-        $this->EE->db->join('exp_member_data', 'exp_member_data.member_id = exp_members.member_id');
-        $this->EE->db->limit(1);
-        $this->EE->db->where('exp_members.member_id', $data);
-        $q = $this->EE->db->get();
+        ee()->db->select('*');
+        ee()->db->from('exp_members');
+        ee()->db->join('exp_member_groups', 'exp_members.group_id = exp_member_groups.group_id');
+        ee()->db->join('exp_member_data', 'exp_member_data.member_id = exp_members.member_id');
+        ee()->db->limit(1);
+        ee()->db->where('exp_members.member_id', $data);
+        $q = ee()->db->get();
 
         if ($q->num_rows()) {
             $qa = $q->result_array();
@@ -120,7 +117,7 @@ class Cki_mblist_ft extends EE_Fieldtype
         //Check that that a selection has been made
         if ($data != '') {
             //Query the database to see if selected member exists
-            $q = $this->EE->db->get_where('exp_members', array('member_id' => $data), 1);
+            $q = ee()->db->get_where('exp_members', array('member_id' => $data), 1);
 
             if ($q->num_rows() ===  1) {
                 return true;
@@ -133,10 +130,10 @@ class Cki_mblist_ft extends EE_Fieldtype
 
     public function display_settings($data)
     {
-        $this->EE->db->select('group_id, group_title');
-        $this->EE->db->from('exp_member_groups');
-        $this->EE->db->order_by('group_id asc');
-        $q = $this->EE->db->get();
+        ee()->db->select('group_id, group_title');
+        ee()->db->from('exp_member_groups');
+        ee()->db->order_by('group_id asc');
+        $q = ee()->db->get();
 
         $field_options = array();
 
@@ -151,7 +148,7 @@ class Cki_mblist_ft extends EE_Fieldtype
             $this->_normalise_settings()
         ;
 
-        $this->EE->table->add_row(
+        ee()->table->add_row(
             '<strong>' . lang('group_ids_label') . '</strong><br />' . lang('group_ids_label_notes'),
             form_multiselect('cki_mblist[group_ids][]', $field_options['group_ids'], explode('|', $field_values['group_ids']))
         );
@@ -192,7 +189,7 @@ class Cki_mblist_ft extends EE_Fieldtype
         }
 
         if ($xss_clean === true) {
-            return $this->EE->security->xss_clean($array[$index]);
+            return ee()->security->xss_clean($array[$index]);
         }
 
         return $array[$index];
