@@ -41,6 +41,7 @@ class Cki_mblist_ft extends EE_Fieldtype
 
         // Create a blank option
         $member_list[''] = "None";
+        $member_id_array =  array();
 
         // Setup the member list array to send to the form_dropdown function
         foreach ($q->result_array() as $member) {
