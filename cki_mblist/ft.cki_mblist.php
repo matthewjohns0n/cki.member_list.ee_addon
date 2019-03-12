@@ -160,12 +160,17 @@ class Cki_mblist_ft extends EE_Fieldtype
 
     public function install()
     {
-        //nothing
+        return true;
+    }
+
+    public function update()
+    {
+        return true;
     }
 
     public function uninstall()
     {
-        //nothing
+        return true;
     }
 
     /**
