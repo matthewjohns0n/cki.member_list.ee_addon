@@ -94,6 +94,9 @@ Valid examples:
 
 h2. Changelog
 
+*2.0.0*
+* Added support for EE 3-5
+
 *1.3*
 * Removed tag pair functionality due to conflicts
 * Now promoting use of "show" parameter instead of "get"
